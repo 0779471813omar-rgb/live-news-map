@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-tag">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رادار الأخبار الذكي | بث مباشر</title>
+    <title>News Radar | رادار الأخبار</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --primary: #e63946; --dark: #1a1a1a; --light: #f1faee; }
-        body { margin: 0; display: flex; height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--dark); color: var(--light); overflow: hidden; }
+        :root { --primary: #e63946; --dark: #121212; --panel: #1e1e1e; --text: #ffffff; }
+        body { margin: 0; display: flex; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--dark); color: var(--text); overflow: hidden; }
         
-        #sidebar { width: 400px; background: #222; border-left: 1px solid #444; display: flex; flex-direction: column; z-index: 1000; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        .header { background: var(--primary); padding: 25px; text-align: center; font-size: 1.4em; font-weight: 800; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* القائمة الجانبية */
+        #sidebar { width: 380px; background: var(--panel); border-left: 1px solid #333; display: flex; flex-direction: column; z-index: 1000; transition: all 0.3s ease; }
+        [dir="ltr"] #sidebar { border-left: none; border-right: 1px solid #333; }
         
-        #stats { background: #333; padding: 10px; text-align: center; font-size: 0.9em; border-bottom: 1px solid #444; color: #aaa; }
+        .header { background: var(--primary); padding: 20px; text-align: center; font-size: 1.3em; font-weight: bold; }
+        #stats { background: #252525; padding: 8px; text-align: center; font-size: 0.85em; color: #888; border-bottom: 1px solid #333; }
         
-        #news-list { flex-grow: 1; overflow-y: auto; padding: 10px; }
-        .news-item { background: #2c2c2c; margin-bottom: 12px; padding: 15px; border-radius: 8px; border-right: 4px solid var(--primary); transition: 0.3s; cursor: pointer; text-decoration: none; color: white; display: block; animation: slideIn 0.5s ease; }
-        .news-item:hover { background: #3d3d3d; transform: scale(1.02); }
-        .news-item h4 { margin: 0; font-size: 1.05em; line-height: 1.4; }
+        #news-list { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        .news-item { background: #2a2a2a; margin-bottom: 10px; padding: 12px; border-radius: 6px; border-right: 4px solid var(--primary); text-decoration: none; color: white; display: block; animation: fadeIn 0.5s; }
+        [dir="ltr"] .news-item { border-right: none; border-left: 4px solid var(--primary); }
         
-        #map { flex-grow: 1; filter: grayscale(0.8) invert(1) contrast(1.2); } /* Dark Mode Map */
-        
-        #controls { position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px; }
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4); }
-        .btn.active { background: #2a9d8f; }
+        #map { flex-grow: 1; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(230, 57, 70, 0); } 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); } }
-        .new-news-flash { animation: pulse 2s infinite; }
+        /* الأزرار العلوية */
+        #controls { position: absolute; top: 15px; right: 15px; z-index: 1001; display: flex; gap: 8px; }
+        [dir="ltr"] #controls { right: auto; left: 15px; }
+        .btn { background: #333; color: white; border: 1px solid var(--primary); padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8em; }
+        .btn.active { background: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="controls">
-        <button id="audio-btn" class="btn" onclick="enableAudio()">🔊 تفعيل الإنذار الصوتي</button>
+        <button class="btn" onclick="toggleLanguage()" id="lang-btn">English</button>
+        <button class="btn" id="audio-btn" onclick="enableAudio()">🔊</button>
     </div>
 
     <div id="sidebar">
-        <div class="header">LIVE NEWS RADAR</div>
-        <div id="stats">الأخبار المرصودة اليوم: <span id="count">0</span></div>
+        <div class="header" id="ui-title">رادار الأخبار المباشر</div>
+        <div id="stats"><span id="ui-stats">الأخبار المرصودة:</span> <span id="count">0</span></div>
         <div id="news-list"></div>
     </div>
 
@@ -49,30 +51,45 @@
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
-        
+        let currentLang = 'ar';
+        let audioActive = false;
+        let lastData = [];
+        const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+
+        const translations = {
+            ar: { title: "رادار الأخبار المباشر", stats: "الأخبار المرصودة:", langBtn: "English", loading: "جاري الجلب..." },
+            en: { title: "Live News Radar", stats: "Detected News:", langBtn: "العربية", loading: "Loading..." }
+        };
+
         var map = L.map('map', { zoomControl: false }).setView([25, 45], 4);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        let lastCount = 0;
-        let audioActive = false;
-        const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.getElementById('html-tag').dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('html-tag').lang = currentLang;
+            
+            document.getElementById('ui-title').innerText = translations[currentLang].title;
+            document.getElementById('ui-stats').innerText = translations[currentLang].stats;
+            document.getElementById('lang-btn').innerText = translations[currentLang].langBtn;
+            renderNews(lastData);
+        }
 
         function enableAudio() {
             audioActive = true;
             document.getElementById('audio-btn').classList.add('active');
-            document.getElementById('audio-btn').innerText = '🔔 الرادار يعمل بصوت';
         }
 
-        function updateRadar() {
+        function fetchData() {
             Papa.parse(csvUrl, {
                 download: true, header: true,
                 complete: function(results) {
                     const data = results.data.filter(r => r.Title);
-                    if (data.length > lastCount) {
-                        if (audioActive && lastCount !== 0) alertSound.play();
-                        renderNews(data);
-                        lastCount = data.length;
+                    if (data.length > lastData.length && lastData.length !== 0 && audioActive) {
+                        alertSound.play();
                     }
+                    lastData = data;
+                    renderNews(data);
                 }
             });
         }
@@ -82,27 +99,24 @@
             document.getElementById('count').innerText = news.length;
             list.innerHTML = '';
             
-            // مسح الماركرات القديمة
             map.eachLayer((layer) => { if (layer instanceof L.Marker) map.removeLayer(layer); });
 
-            news.reverse().forEach((item, index) => {
-                // إضافة للقائمة
+            [...news].reverse().forEach(item => {
                 const card = document.createElement('a');
-                card.className = `news-item ${index === 0 ? 'new-news-flash' : ''}`;
+                card.className = 'news-item';
                 card.href = item.Link;
                 card.target = '_blank';
                 card.innerHTML = `<h4>${item.Title}</h4>`;
                 list.appendChild(card);
 
-                // إضافة للخريطة (توزيع عشوائي حول منطقة الشرق الأوسط)
                 const lat = 15 + Math.random() * 25;
                 const lng = 30 + Math.random() * 25;
-                L.marker([lat, lng]).addTo(map).bindPopup(`<b>${item.Title}</b>`);
+                L.marker([lat, lng]).addTo(map).bindPopup(item.Title);
             });
         }
 
-        setInterval(updateRadar, 30000); // تحديث كل 30 ثانية
-        updateRadar();
+        setInterval(fetchData, 30000);
+        fetchData();
     </script>
 </body>
 </html>
