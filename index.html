@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" id="html-tag">
 <head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-FVT2Q9K6');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Radar | رادار الأخبار</title>
@@ -9,12 +14,9 @@
         :root { --primary: #e63946; --dark: #121212; --panel: #1e1e1e; --text: #ffffff; }
         body { margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--dark); color: var(--text); overflow: hidden; }
         
-        /* شريط التحكم العلوي - لمنع تداخل الأزرار */
         #top-bar { background: #000; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); z-index: 2000; }
-        
         #main-container { display: flex; flex-grow: 1; overflow: hidden; }
 
-        /* القائمة الجانبية */
         #sidebar { width: 380px; background: var(--panel); border-left: 1px solid #333; display: flex; flex-direction: column; z-index: 1000; }
         [dir="ltr"] #sidebar { border-left: none; border-right: 1px solid #333; }
         
@@ -25,10 +27,8 @@
         .news-item { background: #2a2a2a; margin-bottom: 10px; padding: 12px; border-radius: 6px; border-right: 4px solid var(--primary); text-decoration: none; color: white; display: block; animation: fadeIn 0.5s; }
         [dir="ltr"] .news-item { border-right: none; border-left: 4px solid var(--primary); }
         
-        /* الخريطة */
         #map { flex-grow: 1; filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
-        /* أزرار نظيفة */
         .btn { background: #333; color: white; border: 1px solid var(--primary); padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85em; transition: 0.3s; }
         .btn:hover { background: var(--primary); }
         .btn.active { background: #2a9d8f; border-color: #2a9d8f; }
@@ -37,7 +37,8 @@
     </style>
 </head>
 <body>
-
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-FVT2Q9K6"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="top-bar">
         <div style="font-weight: bold; color: var(--primary);">RADAR v2.0</div>
         <div style="display: flex; gap: 10px;">
@@ -123,4 +124,3 @@
     </script>
 </body>
 </html>
-
