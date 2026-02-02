@@ -1,17 +1,17 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رادار الأخبار - النسخة الاحترافية</title>
+    <title>رادار الأخبار - البث التلقائي</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; display: flex; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background: #eee; }
+        body { margin: 0; display: flex; height: 100vh; font-family: 'Segoe UI', Tahoma, sans-serif; background: #eee; overflow: hidden; }
         
         /* القائمة الجانبية */
         #sidebar { 
             width: 380px; 
-            background: white; 
+            background: #ffffff; 
             border-left: 1px solid #ccc; 
             overflow-y: auto; 
             display: flex; 
@@ -20,7 +20,7 @@
             z-index: 1000;
         }
 
-        .header { background: #d32f2f; color: white; padding: 20px; text-align: center; font-size: 1.2em; font-weight: bold; }
+        .header { background: #d32f2f; color: white; padding: 20px; text-align: center; font-size: 1.2em; font-weight: bold; position: sticky; top: 0; z-index: 10; }
 
         .news-item { 
             padding: 15px; 
@@ -32,8 +32,8 @@
 
         .news-item:hover { background: #fff5f5; border-right: 5px solid #d32f2f; }
         
-        .news-item h4 { margin: 0 0 5px 0; color: #333; font-size: 1.1em; }
-        .news-item p { margin: 0; font-size: 0.9em; color: #666; line-height: 1.4; }
+        .news-item h4 { margin: 0 0 5px 0; color: #333; font-size: 1.1em; line-height: 1.3; }
+        .news-item p { margin: 0; font-size: 0.85em; color: #666; line-height: 1.4; }
         .news-time { font-size: 0.75em; color: #999; margin-top: 8px; display: block; }
 
         /* الخريطة */
@@ -50,8 +50,10 @@
 <body>
 
     <div id="sidebar">
-        <div class="header">🔴 البث المباشر للأحداث</div>
-        <div id="news-list"></div>
+        <div class="header">🔴 رادار الأخبار المباشر</div>
+        <div id="news-list">
+            <p style="text-align:center; padding:20px;">جاري جلب آخر الأخبار...</p>
+        </div>
     </div>
 
     <div id="map"></div>
@@ -63,42 +65,8 @@
         var map = L.map('map').setView([25.0, 45.0], 5); 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-        // 2. بيانات الأخبار مع إضافة الوقت
-        const newsData = [
-            { id: 1, lat: 24.7136, lng: 46.6753, title: "الرياض", desc: "بدء فعاليات المؤتمر التقني الدولي بمشاركة عالمية.", time: "منذ 5 دقائق" },
-            { id: 2, lat: 30.0444, lng: 31.2357, title: "القاهرة", desc: "توقعات بهطول أمطار خفيفة على سواحل الإسكندرية والقاهرة.", time: "منذ 15 دقيقة" },
-            { id: 3, lat: 33.5138, lng: 36.2765, title: "دمشق", desc: "تحسن ملحوظ في حركة التجارة عبر الحدود البرية.", time: "منذ ساعة" }
-        ];
-
-        const newsList = document.getElementById('news-list');
-
-        // 3. دالة إضافة الأخبار
-        newsData.forEach(news => {
-            // إضافة الدبوس
-            var marker = L.marker([news.lat, news.lng]).addTo(map);
-            marker.bindPopup(`<b>${news.title}</b><br>${news.desc}<br><small>${news.time}</small>`);
-
-            // إضافة العنصر للقائمة الجانبية
-            const item = document.createElement('div');
-            item.className = 'news-item';
-            item.innerHTML = `
-                <h4>${news.title}</h4>
-                <p>${news.desc}</p>
-                <span class="news-time">🕒 ${news.time}</span>
-            `;
-            
-            item.onclick = () => {
-                map.flyTo([news.lat, news.lng], 12, { duration: 1.5 });
-                marker.openPopup();
-            };
-            
-            newsList.appendChild(item);
-        });
-
-        // 4. ميزة إضافية: عند النقر يظهر لك الإحداثيات (لتسهيل إضافة أخبار جديدة)
-        map.on('click', function(e) {
-            document.getElementById('coords').innerText = `الإحداثيات: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
-        });
-    </script>
-</body>
-</html>
+        // 2. قاعدة بيانات المدن لتحديد الموقع تلقائياً
+        const cityCoords = {
+            "غزة": [31.50, 34.46], "القدس": [31.76, 35.21], "عمان": [31.94, 35.92],
+            "بيروت": [33.89, 35.50], "بغداد": [33.31, 44.36], "القاهرة": [30.04, 31.23],
+            "دمشق": [33.51, 36.27], "صنعاء": [15.36, 44.
