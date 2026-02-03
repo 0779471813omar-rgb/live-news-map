@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Event Map | رصد الأحداث المباشر</title>
+    <title>Live Event Map | النظام المطور</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
@@ -13,43 +13,33 @@
         :root { --primary: #4073ff; --danger: #ff4b2b; --dark: #1a1c1e; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Cairo', sans-serif; background: var(--dark); color: white; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
         header { background: #fff; color: #000; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         #layout { display: flex; flex: 1; overflow: hidden; }
         #map { flex: 1; background: #f0f0f0; }
-
         #sidebar { width: 360px; background: #fff; color: #333; border-left: 1px solid #ddd; display: flex; flex-direction: column; }
         .side-title { padding: 15px; border-bottom: 2px solid var(--primary); font-weight: bold; text-align: center; color: var(--primary); }
         #news-list { flex: 1; overflow-y: auto; background: #f8f9fa; }
-        
-        .news-box { background: #fff; border-bottom: 1px solid #eee; padding: 15px; cursor: pointer; transition: 0.2s; display: flex; gap: 10px; }
+        .news-box { background: #fff; border-bottom: 1px solid #eee; padding: 15px; cursor: pointer; display: flex; gap: 10px; }
         .news-box:hover { background: #f1f4ff; }
-        .news-box .icon-area { min-width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
-        .news-box h4 { font-size: 0.85rem; color: #222; margin: 0; }
-
-        .live-marker { position: relative; width: 30px; height: 30px; border: 2px solid white; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        .icon-area { min-width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        .live-marker { position: relative; width: 30px; height: 30px; border: 2px solid white; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; }
         .live-marker i { transform: rotate(45deg); color: white; font-size: 14px; }
-
         .pulse { position: absolute; width: 15px; height: 15px; border-radius: 50%; animation: pulsing 1.5s infinite; opacity: 0.7; }
         @keyframes pulsing { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(4); opacity: 0; } }
-        
-        .error-msg { padding: 20px; color: red; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: bold; font-size: 1.2rem;">Live <span style="color:var(--primary)">Map</span></div>
-    <div id="stats" style="font-size: 0.8rem;">نشط الآن: <span id="count" style="color:var(--primary); font-weight:bold;">0</span></div>
+    <div style="font-weight: bold; font-size: 1.2rem;">Live <span style="color:var(--primary)">Map AI</span></div>
+    <div id="stats">نشط: <span id="count" style="color:var(--primary); font-weight:bold;">0</span></div>
 </header>
 
 <div id="layout">
     <div id="map"></div>
     <aside id="sidebar">
-        <div class="side-title">آخر الأخبار الميدانية</div>
-        <div id="news-list">
-            <div style="padding:20px; text-align:center;">جاري جلب البيانات...</div>
-        </div>
+        <div class="side-title">تغذية البيانات المباشرة</div>
+        <div id="news-list"></div>
     </aside>
 </div>
 
@@ -57,20 +47,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
 <script>
+    // الرابط المباشر للملف
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
 
     const map = L.map('map').setView([34.8, 38.9], 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
     let markersLayer = L.layerGroup().addTo(map);
 
-    function getMarkerConfig(title) {
-        let config = { icon: "fa-bell", color: "#4073ff" };
-        if (title.includes("قصف") || title.includes("انفجار")) config = { icon: "fa-bomb", color: "#ff4b2b" };
-        else if (title.includes("طيران") || title.includes("مسيرة")) config = { icon: "fa-plane", color: "#673ab7" };
-        else if (title.includes("اشتباك")) config = { icon: "fa-gun", color: "#4caf50" };
-        else if (title.includes("شهيد") || title.includes("قتلى")) config = { icon: "fa-skull", color: "#212121" };
-        return config;
+    function fixNumbers(str) {
+        if (!str) return NaN;
+        // تحويل الأرقام العربية/الهندية إلى إنجليزية وتنظيف النص
+        return parseFloat(String(str).replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[^\d.-]/g, ''));
     }
 
     function update() {
@@ -80,26 +67,24 @@
             skipEmptyLines: true,
             complete: function(results) {
                 const rawData = results.data;
-                
-                // --- المعالجة الذكية للأعمدة ---
-                const data = rawData.map(row => {
-                    // ابحث عن العنوان في أي عمود يشبه الاسم
-                    const title = row.Title || row['العنوان'] || row['عنوان'] || row[Object.keys(row)[0]];
-                    // ابحث عن الإحداثيات في أي عمود يشبهها
-                    const lat = parseFloat(row.Latitude || row['خط العرض'] || row['lat'] || row['Lat']);
-                    const lon = parseFloat(row.Longitude || row['خط الطول'] || row['lon'] || row['Long']);
-                    
-                    return { Title: title, Latitude: lat, Longitude: lon };
-                }).filter(r => r.Title && !isNaN(r.Latitude));
+                const processed = [];
 
-                if (data.length > 0) {
-                    render(data);
+                rawData.forEach(row => {
+                    // البحث المرن عن العناوين والإحداثيات (يدعم العربي والإنجليزي)
+                    const title = row.Title || row['العنوان'] || row['عنوان'] || Object.values(row)[0];
+                    const lat = fixNumbers(row.Latitude || row['خط العرض'] || row['lat'] || row['Lat']);
+                    const lon = fixNumbers(row.Longitude || row['خط الطول'] || row['lon'] || row['Long']);
+
+                    if (title && !isNaN(lat) && !isNaN(lon)) {
+                        processed.push({ Title: title, Latitude: lat, Longitude: lon });
+                    }
+                });
+
+                if (processed.length > 0) {
+                    render(processed);
                 } else {
-                    document.getElementById('news-list').innerHTML = '<div class="error-msg">⚠️ لم يتم العثور على بيانات صحيحة.<br>تأكد من أن الملف يحتوي على أرقام في أعمدة الإحداثيات.</div>';
+                    document.getElementById('news-list').innerHTML = '<div style="padding:20px; color:red; text-align:center;">⚠️ لم يتم العثور على بيانات صالحة.<br>تأكد من كتابة الأرقام بشكل صحيح في الملف.</div>';
                 }
-            },
-            error: function() {
-                document.getElementById('news-list').innerHTML = '<div class="error-msg">❌ فشل الاتصال بـ Google Sheets.</div>';
             }
         });
     }
@@ -111,40 +96,33 @@
         markersLayer.clearLayers();
 
         data.reverse().forEach(item => {
-            const config = getMarkerConfig(item.Title);
+            // أيقونة افتراضية حمراء
+            const color = "#ff4b2b"; 
+            const icon = "fa-location-dot";
 
-            // إضافة الدبوس
             const customIcon = L.divIcon({
-                html: `<div class="pulse" style="background:${config.color}"></div>
-                       <div class="live-marker" style="background:${config.color}">
-                           <i class="fa-solid ${config.icon}"></i>
+                html: `<div class="pulse" style="background:${color}"></div>
+                       <div class="live-marker" style="background:${color}">
+                           <i class="fa-solid ${icon}"></i>
                        </div>`,
-                className: '',
-                iconSize: [30, 30],
-                iconAnchor: [15, 30]
+                className: '', iconSize: [30, 30], iconAnchor: [15, 30]
             });
 
             L.marker([item.Latitude, item.Longitude], { icon: customIcon })
                 .addTo(markersLayer)
                 .bindPopup(`<div style="font-family:Cairo; text-align:right;">${item.Title}</div>`);
 
-            // إضافة للقائمة
             const box = document.createElement('div');
             box.className = 'news-box';
-            box.innerHTML = `
-                <div class="icon-area" style="background:${config.color}">
-                    <i class="fa-solid ${config.icon}"></i>
-                </div>
-                <div><h4>${item.Title}</h4></div>
-            `;
+            box.innerHTML = `<div class="icon-area" style="background:${color}"><i class="fa-solid ${icon}"></i></div>
+                             <div><h4>${item.Title}</h4></div>`;
             box.onclick = () => map.flyTo([item.Latitude, item.Longitude], 10);
             list.appendChild(box);
         });
     }
 
-    setInterval(update, 15000); // تحديث كل 15 ثانية
+    setInterval(update, 15000);
     update();
 </script>
-
 </body>
 </html>
