@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radar Dashboard | لوحة التحكم</title>
+    <title>Radar Dashboard | نظام الرصد المتطور</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
         :root {
             --primary: #00f2ff;
             --danger: #ff003c;
             --bg-dark: #050a0f;
-            --panel-bg: rgba(10, 20, 30, 0.9);
+            --panel-bg: rgba(10, 20, 30, 0.95);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,17 +30,17 @@
 
         /* الشريط العلوي */
         #top-header {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             border-bottom: 2px solid var(--primary);
-            padding: 15px 25px;
+            padding: 12px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
-            z-index: 10;
+            z-index: 1001;
         }
 
-        .logo { font-family: 'Orbitron', sans-serif; color: var(--primary); font-weight: bold; font-size: 1.2rem; }
+        .logo { font-family: 'Orbitron', sans-serif; color: var(--primary); font-weight: bold; font-size: 1.1rem; letter-spacing: 1px; }
 
         /* حاوية المحتوى */
         #dashboard {
@@ -47,37 +49,45 @@
             overflow: hidden;
         }
 
+        /* الخريطة التفاعلية */
+        #map {
+            flex: 1;
+            background: #0b0e14;
+        }
+
         /* قائمة الأخبار الجانبية */
         #news-panel {
-            width: 400px;
+            width: 380px;
             background: var(--panel-bg);
-            border-left: 1px solid rgba(0, 242, 255, 0.2);
+            border-right: 1px solid rgba(0, 242, 255, 0.2);
             display: flex;
             flex-direction: column;
-            transition: 0.3s;
+            z-index: 1000;
         }
 
         .panel-header {
-            padding: 20px;
-            background: linear-gradient(to left, var(--primary), transparent);
+            padding: 15px;
+            background: linear-gradient(90deg, var(--primary), transparent);
             font-weight: bold;
             color: black;
+            font-size: 0.95rem;
         }
 
         #news-container {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 12px;
         }
 
+        /* كرت الخبر بأسلوب Liveuamap */
         .news-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border-right: 4px solid var(--primary);
-            margin-bottom: 15px;
-            padding: 15px;
+            margin-bottom: 10px;
+            padding: 12px;
             border-radius: 4px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             text-decoration: none;
             color: white;
             display: block;
@@ -85,99 +95,128 @@
 
         .news-card:hover {
             background: rgba(0, 242, 255, 0.1);
-            transform: translateX(-5px);
+            transform: scale(1.02);
+            border-right-color: white;
         }
 
-        .news-title { font-weight: bold; font-size: 1rem; margin-bottom: 5px; color: #fff; }
-        .news-meta { font-size: 0.75rem; color: var(--primary); opacity: 0.8; }
+        .news-title { font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; line-height: 1.4; }
+        .news-meta { font-size: 0.7rem; color: var(--primary); opacity: 0.7; font-family: 'Orbitron', sans-serif; }
 
-        /* منطقة العرض الرئيسية (التي كانت فيها الخريطة) */
-        #main-view {
-            flex: 1;
-            background: radial-gradient(circle, #102030 0%, #000 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .placeholder-text {
-            text-align: center;
-            opacity: 0.5;
-            font-family: 'Orbitron', sans-serif;
-        }
-
+        /* نقطة الحالة المتحركة */
         .status-dot {
-            width: 10px; height: 10px; background: var(--danger);
+            width: 8px; height: 8px; background: var(--danger);
             border-radius: 50%; display: inline-block;
-            margin-left: 10px; animation: pulse 1.5s infinite;
+            margin-left: 8px; animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* تخصيص الـ Popups على الخريطة */
+        .leaflet-popup-content-wrapper { background: var(--panel-bg); color: white; border: 1px solid var(--primary); font-family: 'Cairo'; }
+        .leaflet-popup-tip { background: var(--primary); }
     </style>
 </head>
 <body>
 
     <header id="top-header">
         <div class="logo">GLOBAL MONITORING <span class="status-dot"></span></div>
-        <div id="stats">العمليات: <span id="count" style="color:var(--primary)">0</span></div>
+        <div id="stats" style="font-size: 0.85rem;">العمليات الميدانية: <span id="count" style="color:var(--primary); font-family: 'Orbitron';">0</span></div>
     </header>
 
     <div id="dashboard">
-        <main id="main-view">
-            <div class="placeholder-text">
-                <h2>RADAR ACTIVE</h2>
-                <p>جاري سحب البيانات من المصدر...</p>
-            </div>
-        </main>
+        <div id="map"></div>
 
         <aside id="news-panel">
-            <div class="panel-header">وحدة تحليل البيانات الواردة</div>
+            <div class="panel-header">تغذية البيانات المباشرة</div>
             <div id="news-container">
                 </div>
         </aside>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <script>
+        // رابط البيانات
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
 
+        // 1. تهيئة الخريطة بأسلوب داكن
+        const map = L.map('map', { zoomControl: false }).setView([20, 10], 3);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO'
+        }).addTo(map);
+
+        let markersLayer = L.layerGroup().addTo(map);
+
+        // 2. دالة تحديث البيانات
         function updateData() {
             Papa.parse(csvUrl, {
                 download: true,
                 header: true,
                 complete: function(results) {
-                    const data = results.data.filter(row => row.Title); // تصفية السطور الفارغة
-                    renderNews(data);
+                    const data = results.data.filter(row => row.Title && row.Latitude);
+                    renderSystem(data);
                 }
             });
         }
 
-        function renderNews(newsItems) {
+        // 3. دالة الرسم المزدوج (الخريطة + القائمة)
+        function renderSystem(items) {
             const container = document.getElementById('news-container');
-            document.getElementById('count').innerText = newsItems.length;
-            container.innerHTML = ''; // مسح القديم
+            const countEl = document.getElementById('count');
+            
+            countEl.innerText = items.length;
+            container.innerHTML = ''; 
+            markersLayer.clearLayers();
 
-            // عرض البيانات بترتيب عكسي (الأحدث أولاً)
-            [...newsItems].reverse().forEach(item => {
-                const card = document.createElement('a');
+            // معالجة كل خبر (ترتيب تنازلي)
+            [...items].reverse().forEach((item, index) => {
+                const lat = parseFloat(item.Latitude);
+                const lon = parseFloat(item.Longitude);
+
+                // أ- إضافة علامة للخريطة
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const marker = L.circleMarker([lat, lon], {
+                        radius: 7,
+                        fillColor: "#ff003c",
+                        color: "#fff",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.9
+                    }).addTo(markersLayer);
+
+                    marker.bindPopup(`
+                        <div style="direction:rtl; text-align:right;">
+                            <strong style="color:var(--primary)">${item.Title}</strong><br>
+                            <a href="${item.Link}" target="_blank" style="color:#fff; font-size:10px;">فتح المصدر ↗</a>
+                        </div>
+                    `);
+                }
+
+                // ب- إضافة الكرت للقائمة الجانبية
+                const card = document.createElement('div');
                 card.className = 'news-card';
-                card.href = item.Link || '#';
-                card.target = '_blank';
-
                 card.innerHTML = `
-                    <div class="news-meta">SOURCE ID: ${Math.floor(Math.random()*1000)}</div>
+                    <div class="news-meta">EVENT ID: ${1000 + index}</div>
                     <div class="news-title">${item.Title}</div>
-                    <div class="news-meta">إحداثيات: ${item.Latitude || 'N/A'} , ${item.Longitude || 'N/A'}</div>
+                    <div class="news-meta">LOC: ${lat.toFixed(2)}, ${lon.toFixed(2)}</div>
                 `;
+
+                // ج- عند النقر: الانتقال لموقع الخبر على الخريطة
+                card.onclick = () => {
+                    if (!isNaN(lat)) {
+                        map.flyTo([lat, lon], 7, { duration: 1.5 });
+                    }
+                };
+
                 container.appendChild(card);
             });
         }
 
-        // تحديث البيانات كل 20 ثانية
-        setInterval(updateData, 20000);
-        updateData(); // تشغيل أولي
+        // تحديث البيانات كل 30 ثانية
+        setInterval(updateData, 30000);
+        updateData(); // تشغيل فوري
     </script>
 </body>
 </html>
+
