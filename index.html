@@ -1,93 +1,86 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-tag">
+<html lang="ar" dir="rtl">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0DRRTYR85"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-J0DRRTYR85');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global 3D Radar | نظام الرصد العالمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary: #00f2ff; --danger: #ff003c; --dark: #050a0f; --panel: rgba(10, 20, 30, 0.95); --glow: 0 0 10px rgba(0, 242, 255, 0.5); }
+        :root { --primary: #00f2ff; --danger: #ff003c; --dark: #050a0f; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { display: flex; flex-direction: column; height: 100vh; font-family: 'Orbitron', sans-serif; background: var(--dark); color: white; overflow: hidden; }
-        #top-bar { background: rgba(0,0,0,0.9); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); box-shadow: var(--glow); z-index: 2000; }
+        #top-bar { background: rgba(0,0,0,0.9); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); z-index: 2000; }
         #main-container { display: flex; flex-grow: 1; overflow: hidden; }
-        #sidebar { width: 400px; background: var(--panel); border-left: 1px solid var(--primary); display: flex; flex-direction: column; z-index: 1000; }
-        .header { background: linear-gradient(90deg, var(--primary) 0%, rgba(0,242,255,0.1) 70%, transparent 100%); padding: 15px; font-weight: bold; border-bottom: 1px solid rgba(0, 242, 255, 0.3); }
+        #sidebar { width: 350px; background: rgba(10, 20, 30, 0.95); border-left: 1px solid var(--primary); display: flex; flex-direction: column; z-index: 1000; }
+        .header { background: linear-gradient(90deg, var(--primary), transparent); padding: 15px; font-weight: bold; }
         #news-list { flex-grow: 1; overflow-y: auto; padding: 15px; }
-        .news-item { background: rgba(255,255,255,0.03); margin-bottom: 12px; padding: 15px; border-radius: 4px; border-right: 3px solid var(--primary); text-decoration: none; color: #e0f7fa; display: block; transition: 0.3s; }
-        .news-item:hover { background: rgba(0, 242, 255, 0.1); transform: scale(1.02); }
-        #globe-container { flex-grow: 1; background: #000; position: relative; }
-        #globe-canvas { width: 100%; height: 100%; }
-        .btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 8px 18px; cursor: pointer; text-transform: uppercase; }
-        .scanning-indicator { width: 12px; height: 12px; background: var(--danger); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; margin-left: 8px; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .news-item { background: rgba(255,255,255,0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; border-right: 3px solid var(--primary); text-decoration: none; color: #fff; display: block; font-size: 0.9em; }
+        #globe-container { flex-grow: 1; background: radial-gradient(circle, #102030, #000); cursor: grab; }
+        .btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 5px 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="top-bar">
-        <div style="color:var(--primary); font-weight:bold;">SYSTEM ONLINE <span class="scanning-indicator"></span></div>
-        <div style="display: flex; gap: 15px;">
-            <button class="btn" onclick="toggleLanguage()" id="lang-btn">English</button>
-            <button class="btn" id="audio-btn" onclick="enableAudio()">🔔 تفعيل الصوت</button>
+        <div style="color:var(--primary); font-weight:bold;">RADAR SYSTEM ACTIVE</div>
+        <div>
+            <button class="btn" id="audio-btn" onclick="enableAudio()">🔔 تفعيل التنبيه</button>
         </div>
     </div>
 
     <div id="main-container">
         <div id="sidebar">
-            <div class="header" id="ui-title">وحدة الرصد والتحليل الجغرافي</div>
-            <div style="padding:10px 15px; font-size:0.8em;">📡 المصادر: <span id="count" style="color:var(--primary)">0</span></div>
+            <div class="header">وحدة الرصد الجغرافي</div>
+            <div style="padding:10px; font-size:0.8em;">العمليات النشطة: <span id="count" style="color:var(--primary)">0</span></div>
             <div id="news-list"></div>
         </div>
-        <div id="globe-container">
-            <canvas id="globe-canvas"></canvas>
-        </div>
+        <div id="globe-container"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
-        let currentLang = 'ar';
         let audioActive = false;
         let lastDataCount = 0;
         const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
-        // --- Three.js Setup ---
+        // --- تهيئة المشهد الثلاثي الأبعاد ---
         const scene = new THREE.Scene();
         const container = document.getElementById('globe-container');
-        const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globe-canvas'), antialias: true, alpha: true });
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
 
-        const globeRadius = 1;
-        const textureLoader = new THREE.TextureLoader();
-        const earthTexture = textureLoader.load('earth_map.jpg');
-        
+        // إنشاء الكرة الأرضية
         const globe = new THREE.Mesh(
-            new THREE.SphereGeometry(globeRadius, 64, 64),
-            new THREE.MeshPhongMaterial({ map: earthTexture, transparent: true, opacity: 0.9 })
+            new THREE.SphereGeometry(1, 64, 64),
+            new THREE.MeshPhongMaterial({ 
+                color: 0x112233,
+                emissive: 0x001122,
+                wireframe: true // تم تفعيل الشبكة كبديل مؤقت في حال فقدان الصورة
+            })
         );
         scene.add(globe);
 
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(5, 3, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x444444));
+        // تحميل الصورة إذا وجدت
+        new THREE.TextureLoader().load('earth_map.jpg', (tex) => {
+            globe.material.map = tex;
+            globe.material.wireframe = false;
+            globe.material.needsUpdate = true;
+        });
 
+        const light = new THREE.PointLight(0xffffff, 1.2);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040));
         camera.position.z = 2.5;
+
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
 
@@ -101,36 +94,34 @@
         }
         animate();
 
-        // --- Logic ---
-        function addMarkerToGlobe(lat, lon) {
-            const latRad = lat * (Math.PI / 180);
-            const lonRad = -lon * (Math.PI / 180);
-            const r = globeRadius + 0.02;
+        // --- منطق البيانات ---
+        function addMarker(lat, lon) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
             
-            const position = new THREE.Vector3(
-                r * Math.cos(latRad) * Math.cos(lonRad),
-                r * Math.sin(latRad),
-                r * Math.cos(latRad) * Math.sin(lonRad)
-            );
+            const x = -(Math.sin(phi) * Math.cos(theta));
+            const y = Math.cos(phi);
+            const z = Math.sin(phi) * Math.sin(theta);
 
             const marker = new THREE.Mesh(
-                new THREE.SphereGeometry(0.015, 16, 16),
+                new THREE.SphereGeometry(0.02, 12, 12),
                 new THREE.MeshBasicMaterial({ color: 0xff003c })
             );
-            marker.position.copy(position);
-            scene.add(marker);
+            marker.position.set(x, y, z);
+            globe.add(marker); // أضفنا النقطة للمجسم نفسه لتتحرك معه
 
-            const pulse = new THREE.Mesh(
-                new THREE.SphereGeometry(0.03, 16, 16),
-                new THREE.MeshBasicMaterial({ color: 0xff003c, transparent: true, opacity: 0.5 })
+            // تأثير النبض
+            const ring = new THREE.Mesh(
+                new THREE.SphereGeometry(0.02, 12, 12),
+                new THREE.MeshBasicMaterial({ color: 0xff003c, transparent: true, opacity: 0.6 })
             );
-            pulse.position.copy(position);
-            scene.add(pulse);
+            ring.position.set(x, y, z);
+            globe.add(ring);
 
-            gsap.to(pulse.scale, { x: 4, y: 4, z: 4, duration: 2, repeat: -1 });
-            gsap.to(pulse.material, { opacity: 0, duration: 2, repeat: -1 });
-            
-            markers.push(marker, pulse);
+            gsap.to(ring.scale, { x: 5, y: 5, z: 5, duration: 1.5, repeat: -1 });
+            gsap.to(ring.material, { opacity: 0, duration: 1.5, repeat: -1 });
+
+            markers.push(marker, ring);
         }
 
         function fetchData() {
@@ -140,36 +131,41 @@
                     const data = results.data.filter(r => r.Title);
                     if (data.length > lastDataCount && lastDataCount !== 0 && audioActive) alertSound.play();
                     lastDataCount = data.length;
-                    renderNews(data);
-                }
-            });
-        }
+                    
+                    document.getElementById('count').innerText = data.length;
+                    const list = document.getElementById('news-list');
+                    list.innerHTML = '';
+                    
+                    // تنظيف النقاط القديمة
+                    markers.forEach(m => globe.remove(m));
+                    markers.length = 0;
 
-        function renderNews(news) {
-            const list = document.getElementById('news-list');
-            document.getElementById('count').innerText = news.length;
-            list.innerHTML = '';
-            markers.forEach(m => scene.remove(m));
-            markers.length = 0;
+                    data.reverse().forEach(item => {
+                        const div = document.createElement('a');
+                        div.className = 'news-item';
+                        div.href = item.Link; div.target = '_blank';
+                        div.innerHTML = `<b>${item.Title}</b>`;
+                        list.appendChild(div);
 
-            [...news].reverse().forEach(item => {
-                const a = document.createElement('a');
-                a.className = 'news-item';
-                a.href = item.Link; a.target = '_blank';
-                a.innerHTML = `<div>${item.Title}</div>`;
-                list.appendChild(a);
-
-                if(item.Latitude && item.Longitude) {
-                    addMarkerToGlobe(parseFloat(item.Latitude), parseFloat(item.Longitude));
+                        if(item.Latitude && item.Longitude) {
+                            addMarker(parseFloat(item.Latitude), parseFloat(item.Longitude));
+                        }
+                    });
                 }
             });
         }
 
         function enableAudio() { audioActive = true; document.getElementById('audio-btn').innerText = "🔊 ON"; }
-        function toggleLanguage() { /* وظيفة اللغة هنا */ }
 
-        setInterval(fetchData, 15000);
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        setInterval(fetchData, 10000);
         fetchData();
     </script>
 </body>
 </html>
+
