@@ -8,160 +8,34 @@
       gtag('js', new Date());
       gtag('config', 'G-J0DRRTYR85');
     </script>
-    
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-FVT2Q9K6');</script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global 3D Radar | نظام الرصد العالمي</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { 
-            --primary: #00f2ff; /* Cyber Blue */
-            --danger: #ff003c; /* Alert Red */
-            --dark: #050a0f;    /* Deep Dark Background */
-            --panel: rgba(10, 20, 30, 0.95); /* Semi-transparent panel */
-            --glow: 0 0 10px rgba(0, 242, 255, 0.5); /* Primary color glow */
-            --danger-glow: 0 0 8px rgba(255, 0, 60, 0.7); /* Danger color glow */
-        }
-        
+        :root { --primary: #00f2ff; --danger: #ff003c; --dark: #050a0f; --panel: rgba(10, 20, 30, 0.95); --glow: 0 0 10px rgba(0, 242, 255, 0.5); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            display: flex; flex-direction: column; height: 100vh; 
-            font-family: 'Orbitron', sans-serif; background: var(--dark); 
-            color: white; overflow: hidden;
-            user-select: none; /* Prevent text selection */
-        }
-        
-        /* Top Bar Styling */
-        #top-bar { 
-            background: rgba(0,0,0,0.9); padding: 12px 25px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--primary); 
-            box-shadow: var(--glow); z-index: 2000;
-            position: relative;
-        }
-        #top-bar .title-section {
-            display: flex; align-items: center;
-            font-weight: bold; color: var(--primary);
-            font-size: 1.1em; letter-spacing: 1px;
-            text-shadow: var(--glow);
-        }
-        .scanning-indicator {
-            width: 15px; height: 15px; background: var(--danger); 
-            border-radius: 50%; margin-left: 10px;
-            animation: pulse-danger 1.5s infinite ease-out;
-            box-shadow: var(--danger-glow);
-        }
-        @keyframes pulse-danger { 
-            0% { transform: scale(0.8); opacity: 0.9; } 
-            50% { transform: scale(1.2); opacity: 0.3; } 
-            100% { transform: scale(0.8); opacity: 0.9; } 
-        }
-
-        /* Main Container Layout */
+        body { display: flex; flex-direction: column; height: 100vh; font-family: 'Orbitron', sans-serif; background: var(--dark); color: white; overflow: hidden; }
+        #top-bar { background: rgba(0,0,0,0.9); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); box-shadow: var(--glow); z-index: 2000; }
         #main-container { display: flex; flex-grow: 1; overflow: hidden; }
-
-        /* Sidebar Styling */
-        #sidebar { 
-            width: 400px; min-width: 300px; 
-            background: var(--panel); backdrop-filter: blur(8px); 
-            border-left: 1px solid var(--primary); 
-            display: flex; flex-direction: column; z-index: 1000; 
-            transition: width 0.3s ease, border-color 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.4);
-        }
-        [dir="ltr"] #sidebar { border-left: none; border-right: 1px solid var(--primary); box-shadow: 5px 0 15px rgba(0,0,0,0.4); }
-
-        .header { 
-            background: linear-gradient(90deg, var(--primary) 0%, rgba(0,242,255,0.1) 70%, transparent 100%); 
-            padding: 15px; font-weight: bold; font-size: 1.1em; 
-            letter-spacing: 1.5px; text-shadow: var(--glow);
-            border-bottom: 1px solid rgba(0, 242, 255, 0.3);
-        }
-        
-        #stats-panel { 
-            padding: 10px 15px; font-size: 0.8em; 
-            border-bottom: 1px solid rgba(0, 242, 255, 0.2); 
-            color: #ccc;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        #stats-panel span { color: var(--primary); font-weight: bold; }
-        
-        #news-list { 
-            flex-grow: 1; overflow-y: auto; padding: 15px; 
-            scrollbar-width: thin; scrollbar-color: var(--primary) transparent; 
-        }
-        #news-list::-webkit-scrollbar { width: 8px; }
-        #news-list::-webkit-scrollbar-track { background: var(--panel); }
-        #news-list::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 4px; border: 2px solid var(--panel); }
-
-        /* News Item Styling */
-        .news-item { 
-            background: rgba(255,255,255,0.03); margin-bottom: 12px; 
-            padding: 15px; border-radius: 4px; 
-            border-right: 3px solid var(--primary); 
-            transition: 0.3s ease; cursor: pointer; text-decoration: none; 
-            color: #e0f7fa; display: block;
-            box-shadow: 0 0 5px rgba(0,242,255,0.05);
-            animation: fadeIn 0.5s ease-out;
-        }
-        .news-item:hover { 
-            background: rgba(0, 242, 255, 0.1); 
-            transform: translateY(-2px); 
-            box-shadow: var(--glow); 
-            border-right-color: #fff;
-        }
-        .news-item .item-id { font-size: 0.7em; color: var(--primary); margin-bottom: 5px; opacity: 0.7; }
-        .news-item .item-title { font-weight: bold; font-size: 0.95em; line-height: 1.4; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Globe Container */
-        #globe-container { 
-            flex-grow: 1; position: relative; 
-            background: radial-gradient(circle at 50% 50%, #000 0%, #050a0f 70%, #000 100%); 
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; /* Ensure canvas doesn't overflow */
-        }
-        #globe-canvas { 
-            width: 100%; height: 100%; display: block; 
-            filter: saturate(1.2) contrast(1.1); /* Enhance globe visuals */
-        }
-
-        /* Button Styling */
-        .btn { 
-            background: transparent; color: var(--primary); 
-            border: 1px solid var(--primary); padding: 8px 18px; 
-            border-radius: 2px; cursor: pointer; font-size: 0.8em; 
-            transition: 0.3s ease; text-transform: uppercase; 
-            box-shadow: var(--glow);
-        }
-        .btn:hover { background: var(--primary); color: var(--dark); box-shadow: none; }
-        .btn.active { background: var(--primary); color: var(--dark); box-shadow: none; }
-
-        /* Responsive Design */
-        @media (max-width: 900px) {
-            #sidebar { width: 100%; height: 250px; border-right: none; border-bottom: 1px solid var(--primary); }
-            #main-container { flex-direction: column; }
-            [dir="ltr"] #sidebar { border-right: none; }
-        }
+        #sidebar { width: 400px; background: var(--panel); border-left: 1px solid var(--primary); display: flex; flex-direction: column; z-index: 1000; }
+        .header { background: linear-gradient(90deg, var(--primary) 0%, rgba(0,242,255,0.1) 70%, transparent 100%); padding: 15px; font-weight: bold; border-bottom: 1px solid rgba(0, 242, 255, 0.3); }
+        #news-list { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        .news-item { background: rgba(255,255,255,0.03); margin-bottom: 12px; padding: 15px; border-radius: 4px; border-right: 3px solid var(--primary); text-decoration: none; color: #e0f7fa; display: block; transition: 0.3s; }
+        .news-item:hover { background: rgba(0, 242, 255, 0.1); transform: scale(1.02); }
+        #globe-container { flex-grow: 1; background: #000; position: relative; }
+        #globe-canvas { width: 100%; height: 100%; }
+        .btn { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 8px 18px; cursor: pointer; text-transform: uppercase; }
+        .scanning-indicator { width: 12px; height: 12px; background: var(--danger); border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; margin-left: 8px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-FVT2Q9K6"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div id="top-bar">
-        <div class="title-section">
-            GLOBAL 3D RADAR SYSTEM <span class="scanning-indicator"></span>
-        </div>
+        <div style="color:var(--primary); font-weight:bold;">SYSTEM ONLINE <span class="scanning-indicator"></span></div>
         <div style="display: flex; gap: 15px;">
             <button class="btn" onclick="toggleLanguage()" id="lang-btn">English</button>
             <button class="btn" id="audio-btn" onclick="enableAudio()">🔔 تفعيل الصوت</button>
@@ -171,12 +45,8 @@
     <div id="main-container">
         <div id="sidebar">
             <div class="header" id="ui-title">وحدة الرصد والتحليل الجغرافي</div>
-            <div id="stats-panel">
-                <span>📡 المصادر النشطة: <span id="count">0</span></span>
-                <span>تحديث: <span id="last-update">الآن</span></span>
-            </div>
-            <div id="news-list">
-                </div>
+            <div style="padding:10px 15px; font-size:0.8em;">📡 المصادر: <span id="count" style="color:var(--primary)">0</span></div>
+            <div id="news-list"></div>
         </div>
         <div id="globe-container">
             <canvas id="globe-canvas"></canvas>
@@ -184,213 +54,93 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/addons/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <script>
-        // Google Sheet URL for CSV data
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv'; // تأكد من أن هذا الرابط هو رابط الـ CSV الصحيح والنهائي
-
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
         let currentLang = 'ar';
         let audioActive = false;
         let lastDataCount = 0;
         const alertSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
-        alertSound.volume = 0.5; // Adjust volume
 
-        // Translations for UI elements
-        const translations = {
-            ar: { 
-                title: "وحدة الرصد والتحليل الجغرافي", 
-                activeSources: "المصادر النشطة:", 
-                lastUpdate: "تحديث:",
-                langBtn: "English", 
-                audioBtn: "🔔 تفعيل الصوت", 
-                audioOn: "🔊 الصوت يعمل",
-                systemStatus: "نظام الرادار العالمي"
-            },
-            en: { 
-                title: "Geographical Monitoring & Analysis Unit", 
-                activeSources: "Active Sources:",
-                lastUpdate: "Last Update:",
-                langBtn: "العربية", 
-                audioBtn: "🔔 Activate Audio Alert", 
-                audioOn: "🔊 System Audio On",
-                systemStatus: "Global Radar System"
-            }
-        };
-
-        // --- Three.js Globe Setup ---
+        // --- Three.js Setup ---
         const scene = new THREE.Scene();
         const container = document.getElementById('globe-container');
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('globe-canvas'), antialias: true, alpha: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
 
-        const globeRadius = 1; 
-        const globeSegments = 64; 
-
-        // Load Earth Texture (You need to upload 'earth_map.jpg' to your GitHub repo)
+        const globeRadius = 1;
         const textureLoader = new THREE.TextureLoader();
-        const earthTexture = textureLoader.load('earth_map.jpg', 
-            () => { console.log("Earth texture loaded successfully."); },
-            undefined, 
-            (err) => { console.error("Error loading Earth texture:", err); }
-        );
+        const earthTexture = textureLoader.load('earth_map.jpg');
         
-        const globeMaterial = new THREE.MeshPhongMaterial({ map: earthTexture, transparent: true, opacity: 0.9 });
-        const globeGeometry = new THREE.SphereGeometry(globeRadius, globeSegments, globeSegments);
-        const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+        const globe = new THREE.Mesh(
+            new THREE.SphereGeometry(globeRadius, 64, 64),
+            new THREE.MeshPhongMaterial({ map: earthTexture, transparent: true, opacity: 0.9 })
+        );
         scene.add(globe);
 
-        // Add Atmospheric Glow (Optional but enhances realism)
-        const atmosphereMaterial = new THREE.ShaderMaterial({
-            uniforms: {
-                'c': { type: 'f', value: 0.1 },
-                'p': { type: 'f', value: 2.0 },
-                glowColor: { type: 'c', value: new THREE.Color(0x00f2ff) },
-            },
-            vertexShader: `
-                uniform vec3 viewVector;
-                uniform float c;
-                uniform float p;
-                varying float intensity;
-                void main() {
-                    vec3 vNormal = normalize( normalMatrix * normal );
-                    vec3 vViewPosition = normalize( modelViewMatrix * vec4( position, 1.0 ) ).xyz;
-                    intensity = pow( c - dot(vNormal, vViewPosition), p );
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-                }
-            `,
-            fragmentShader: `
-                uniform vec3 glowColor;
-                varying float intensity;
-                void main() {
-                    vec3 glow = glowColor * intensity;
-                    gl_FragColor = vec4( glow, 1.0 );
-                }
-            `,
-            side: THREE.BackSide,
-            blending: THREE.AdditiveBlending,
-            transparent: true
-        });
-        const atmosphere = new THREE.Mesh(globeGeometry, atmosphereMaterial);
-        atmosphere.scale.set(1.1, 1.1, 1.1); // Make atmosphere slightly larger than globe
-        scene.add(atmosphere);
-
-
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.5); 
-        scene.add(ambientLight);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(5, 3, 5).normalize();
-        scene.add(directionalLight);
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 3, 5);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x444444));
 
         camera.position.z = 2.5;
-
-        // OrbitControls for interaction
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.minDistance = 1.5;
-        controls.maxDistance = 5;
-        controls.rotateSpeed = 0.5;
 
-        const markers = []; // Store 3D markers
+        const markers = [];
 
         function animate() {
             requestAnimationFrame(animate);
-            globe.rotation.y += 0.001; // Slow continuous rotation
-            atmosphere.rotation.y += 0.0015; // Slightly faster rotation for atmosphere effect
+            globe.rotation.y += 0.001;
             controls.update();
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const container = document.getElementById('globe-container');
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
-
-        // Convert Lat/Lon to 3D coordinates on the globe
-        function convertLatLngToSphereCoords(lat, lon, radius) {
+        // --- Logic ---
+        function addMarkerToGlobe(lat, lon) {
             const latRad = lat * (Math.PI / 180);
-            const lonRad = -lon * (Math.PI / 180); // Invert longitude for correct mapping
-            const x = radius * Math.cos(latRad) * Math.cos(lonRad);
-            const y = radius * Math.sin(latRad);
-            const z = radius * Math.cos(latRad) * Math.sin(lonRad);
-            return new THREE.Vector3(x, y, z);
-        }
+            const lonRad = -lon * (Math.PI / 180);
+            const r = globeRadius + 0.02;
+            
+            const position = new THREE.Vector3(
+                r * Math.cos(latRad) * Math.cos(lonRad),
+                r * Math.sin(latRad),
+                r * Math.cos(latRad) * Math.sin(lonRad)
+            );
 
-        function addMarkerToGlobe(lat, lon, title) {
-            const position = convertLatLngToSphereCoords(lat, lon, globeRadius * 1.005); // Slightly above globe surface
-
-            const markerGeometry = new THREE.SphereGeometry(0.015, 16, 16); // Small sphere marker
-            const markerMaterial = new THREE.MeshBasicMaterial({ color: var_danger, transparent: true, opacity: 0.9 });
-            const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+            const marker = new THREE.Mesh(
+                new THREE.SphereGeometry(0.015, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0xff003c })
+            );
             marker.position.copy(position);
-
-            // Create a pulsating effect for the marker
-            const pulseMaterial = new THREE.MeshBasicMaterial({ color: var_danger, transparent: true, opacity: 0.4 });
-            const pulseSphere = new THREE.Mesh(new THREE.SphereGeometry(0.03, 16, 16), pulseMaterial);
-            pulseSphere.position.copy(position);
-            pulseSphere.scale.set(0.1, 0.1, 0.1); // Start small
-            scene.add(pulseSphere);
-
-            // Animate marker pulse
-            gsap.to(pulseSphere.scale, {
-                x: 1, y: 1, z: 1,
-                duration: 1.5,
-                repeat: -1,
-                ease: "power2.out",
-                onUpdate: function() {
-                    pulseSphere.material.opacity = 0.4 * (1 - this.progress()); // Fade out
-                },
-                onComplete: function() {
-                    // Remove pulse sphere after animation if needed, or let it repeat
-                }
-            });
-
             scene.add(marker);
-            markers.push({marker: marker, pulse: pulseSphere});
-        }
-        // --- End Three.js Globe Setup ---
 
-        // Language Toggle
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            document.getElementById('html-tag').dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('ui-title').innerText = translations[currentLang].title;
-            document.getElementById('lang-btn').innerText = translations[currentLang].langBtn;
-            if(!audioActive) document.getElementById('audio-btn').innerText = translations[currentLang].audioBtn;
-            document.getElementById('stats-panel').querySelector('span:first-child').innerHTML = `📡 ${translations[currentLang].activeSources} <span id="count">${document.getElementById('count').innerText}</span>`;
-            document.getElementById('stats-panel').querySelector('span:last-child').innerHTML = `${translations[currentLang].lastUpdate} <span id="last-update">${document.getElementById('last-update').innerText}</span>`;
-            document.querySelector('#top-bar .title-section').innerHTML = `${translations[currentLang].systemStatus} <span class="scanning-indicator"></span>`;
+            const pulse = new THREE.Mesh(
+                new THREE.SphereGeometry(0.03, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0xff003c, transparent: true, opacity: 0.5 })
+            );
+            pulse.position.copy(position);
+            scene.add(pulse);
 
+            gsap.to(pulse.scale, { x: 4, y: 4, z: 4, duration: 2, repeat: -1 });
+            gsap.to(pulse.material, { opacity: 0, duration: 2, repeat: -1 });
+            
+            markers.push(marker, pulse);
         }
 
-        // Enable Audio Alert
-        function enableAudio() {
-            audioActive = true;
-            document.getElementById('audio-btn').classList.add('active');
-            document.getElementById('audio-btn').innerText = translations[currentLang].audioOn;
-        }
-
-        // Fetch CSV Data
         function fetchData() {
             Papa.parse(csvUrl, {
                 download: true, header: true,
                 complete: function(results) {
-                    const data = results.data.filter(r => r.Title && r.Latitude && r.Longitude); // Filter for valid data with Lat/Lon
-                    if (data.length > lastDataCount && lastDataCount !== 0 && audioActive) {
-                        alertSound.play();
-                    }
+                    const data = results.data.filter(r => r.Title);
+                    if (data.length > lastDataCount && lastDataCount !== 0 && audioActive) alertSound.play();
                     lastDataCount = data.length;
                     renderNews(data);
-                    document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
                 }
             });
         }
@@ -399,38 +149,27 @@
             const list = document.getElementById('news-list');
             document.getElementById('count').innerText = news.length;
             list.innerHTML = '';
-            
-            // Remove old 3D markers
-            markers.forEach(obj => { scene.remove(obj.marker); scene.remove(obj.pulse); });
-            markers.length = 0; 
+            markers.forEach(m => scene.remove(m));
+            markers.length = 0;
 
-            // Sort news by latest first if a timestamp/date column exists (assuming 'Timestamp' column)
-            // news.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp)); 
+            [...news].reverse().forEach(item => {
+                const a = document.createElement('a');
+                a.className = 'news-item';
+                a.href = item.Link; a.target = '_blank';
+                a.innerHTML = `<div>${item.Title}</div>`;
+                list.appendChild(a);
 
-            [...news].reverse().forEach(item => { // Reverse to show latest first in sidebar
-                const card = document.createElement('a');
-                card.className = 'news-item';
-                card.href = item.Link; card.target = '_blank';
-                card.innerHTML = `
-                    <div class="item-id">ID: SEC-0${Math.floor(1000 + Math.random() * 8999)}</div>
-                    <div class="item-title">${item.Title}</div>
-                    <div style="font-size:0.65em; color:#aaa; margin-top:5px;">المصدر: ${item.Source || 'غير معروف'}</div>
-                `;
-                list.appendChild(card);
-
-                // Add 3D marker for each news item
-                const lat = parseFloat(item.Latitude);
-                const lon = parseFloat(item.Longitude);
-                if (!isNaN(lat) && !isNaN(lon)) {
-                    addMarkerToGlobe(lat, lon, item.Title);
+                if(item.Latitude && item.Longitude) {
+                    addMarkerToGlobe(parseFloat(item.Latitude), parseFloat(item.Longitude));
                 }
             });
         }
 
-        // Initialize UI and start fetching data
-        toggleLanguage(); // Set default language (Arabic RTL)
-        setInterval(fetchData, 15000); // Fetch data every 15 seconds
-        fetchData(); // Initial fetch
+        function enableAudio() { audioActive = true; document.getElementById('audio-btn').innerText = "🔊 ON"; }
+        function toggleLanguage() { /* وظيفة اللغة هنا */ }
+
+        setInterval(fetchData, 15000);
+        fetchData();
     </script>
 </body>
 </html>
