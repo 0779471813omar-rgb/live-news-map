@@ -3,164 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Global Radar | رادار الرصد العالمي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Radar System | نظام الرصد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00f2ff; --danger: #ff003c; --dark: #050a0f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; flex-direction: column; height: 100vh; font-family: 'Cairo', sans-serif; background: var(--dark); color: white; overflow: hidden; }
-        
-        #top-bar { background: rgba(0,0,0,0.9); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); z-index: 2000; }
-        .logo { font-family: 'Orbitron', sans-serif; color: var(--primary); font-weight: bold; }
+        :root {
+            --neon-blue: #00f2ff;
+            --alert-red: #ff003c;
+            --dark-bg: #0a0b10;
+        }
 
-        #main-container { display: flex; flex-grow: 1; overflow: hidden; }
-        
-        /* القائمة الجانبية */
-        #sidebar { width: 350px; background: rgba(10, 20, 30, 0.9); border-left: 1px solid var(--primary); display: flex; flex-direction: column; z-index: 1000; }
-        .header { background: var(--primary); color: #000; padding: 15px; font-weight: bold; text-align: center; }
-        
-        #news-list { flex-grow: 1; overflow-y: auto; padding: 15px; }
-        .news-item { background: rgba(255,255,255,0.05); margin-bottom: 10px; padding: 12px; border-radius: 4px; border-right: 4px solid var(--primary); text-decoration: none; color: #fff; display: block; transition: 0.3s; }
-        .news-item:hover { background: rgba(0, 242, 255, 0.1); transform: scale(1.02); }
+        body {
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-        /* حاوية الخريطة */
-        #globe-container { flex-grow: 1; background: radial-gradient(circle, #102030, #000); cursor: grab; position: relative; }
+        /* رأس الصفحة */
+        header {
+            border-bottom: 2px solid var(--neon-blue);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-dot {
+            width: 10px; height: 10px;
+            background-color: var(--alert-red);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* منطقة الأخبار */
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .news-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            border-right: 4px solid var(--neon-blue);
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .news-card:hover {
+            background: rgba(0, 242, 255, 0.05);
+            border-color: var(--neon-blue);
+            transform: translateY(-3px);
+        }
+
+        .news-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .news-card .meta {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* سكرول بار أنيق */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-blue); }
     </style>
 </head>
 <body>
 
-    <div id="top-bar">
-        <div class="logo">SYSTEM ACTIVE // GLOBAL RADAR</div>
-        <div style="font-family: 'Orbitron';">LIVE: <span id="count" style="color:var(--primary)">0</span></div>
-    </div>
-
-    <div id="main-container">
-        <div id="globe-container"></div>
-
-        <div id="sidebar">
-            <div class="header">وحدة رصد البيانات</div>
-            <div id="news-list">
-                <p style="text-align:center; padding:20px; color:#555;">جاري الاتصال بالقمر الصناعي...</p>
-            </div>
+    <header>
+        <div class="title">RADAR MONITORING // LEVEL 01</div>
+        <div class="status-container">
+            <span id="data-count">جاري التحميل...</span>
+            <div class="pulse-dot"></div>
         </div>
-    </div>
+    </header>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/controls/OrbitControls.js"></script>
+    <main>
+        <div id="news-list" class="news-grid">
+            </div>
+    </main>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <script>
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
+        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSwHGhFEF1yL4wxSzY3tlFFIPIvjLDkEfTrQwg4dQgr3IJNzwBANp7QOS5gkQthMnKwgfExwt_gL1Lu/pub?output=csv';
 
-        // --- إعداد المشهد (Scene) ---
-        const scene = new THREE.Scene();
-        const container = document.getElementById('globe-container');
-        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
-
-        // إنشاء الكرة الأرضية (بشكل تقني Wireframe)
-        const geometry = new THREE.SphereGeometry(1, 40, 40);
-        const material = new THREE.MeshPhongMaterial({
-            color: 0x00f2ff,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.2
-        });
-        const globe = new THREE.Mesh(geometry, material);
-        scene.add(globe);
-
-        // إضافة إضاءة
-        const light = new THREE.PointLight(0xffffff, 1);
-        light.position.set(5, 5, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x333333));
-
-        camera.position.z = 2.5;
-
-        // تحكم الماوس
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-
-        const markers = [];
-
-        function animate() {
-            requestAnimationFrame(animate);
-            globe.rotation.y += 0.002; // دوران هادئ للأرض
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // --- دالة إضافة النقاط ---
-        function addMarker(lat, lon) {
-            const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lon + 180) * (Math.PI / 180);
-            
-            const x = -(Math.sin(phi) * Math.cos(theta));
-            const y = Math.cos(phi);
-            const z = Math.sin(phi) * Math.sin(theta);
-
-            const marker = new THREE.Mesh(
-                new THREE.SphereGeometry(0.02, 10, 10),
-                new THREE.MeshBasicMaterial({ color: 0xff003c })
-            );
-            marker.position.set(x, y, z);
-            globe.add(marker); // النقطة تتبع الأرض في دورانها
-            markers.push(marker);
-        }
-
-        // --- جلب البيانات وتحديث القائمة ---
-        function fetchData() {
-            Papa.parse(csvUrl, {
+        function loadNews() {
+            Papa.parse(sheetUrl, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    const data = results.data.filter(r => r.Title);
-                    document.getElementById('count').innerText = data.length;
-                    
-                    const list = document.getElementById('news-list');
-                    list.innerHTML = '';
-                    
-                    // تنظيف النقاط القديمة
-                    markers.forEach(m => globe.remove(m));
-                    markers.length = 0;
-
-                    data.reverse().forEach(item => {
-                        // إضافة للقائمة
-                        const div = document.createElement('a');
-                        div.className = 'news-item';
-                        div.href = item.Link || "#";
-                        div.target = "_blank";
-                        div.innerHTML = `<strong>${item.Title}</strong>`;
-                        list.appendChild(div);
-
-                        // إضافة للخريطة
-                        const lat = parseFloat(item.Latitude);
-                        const lon = parseFloat(item.Longitude);
-                        if(!isNaN(lat) && !isNaN(lon)) {
-                            addMarker(lat, lon);
-                        }
-                    });
+                    const data = results.data;
+                    displayNews(data);
                 }
             });
         }
 
-        // تحديث كل 20 ثانية
-        setInterval(fetchData, 20000);
-        fetchData();
+        function displayNews(items) {
+            const container = document.getElementById('news-list');
+            const countDisplay = document.getElementById('data-count');
+            
+            container.innerHTML = '';
+            countDisplay.innerText = `نشط الآن: ${items.length}`;
 
-        // التعامل مع تغير حجم النافذة
-        window.addEventListener('resize', () => {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
+            // الأحدث يظهر أولاً
+            [...items].reverse().forEach(item => {
+                if (item.Title) {
+                    const card = document.createElement('a');
+                    card.className = 'news-card';
+                    card.href = item.Link || '#';
+                    card.target = '_blank';
+                    
+                    card.innerHTML = `
+                        <div class="meta">REF_${Math.floor(Math.random()*9000)+1000}</div>
+                        <h3>${item.Title}</h3>
+                        <div class="meta">${item.Latitude ? 'COORDS: ' + item.Latitude + ',' + item.Longitude : 'NO LOCATION DATA'}</div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+        }
 
+        // التحديث كل 10 ثوانٍ
+        setInterval(loadNews, 10000);
+        loadNews();
     </script>
 </body>
 </html>
